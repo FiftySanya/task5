@@ -24,30 +24,30 @@ rc_release(b) зменшує b->refcount до 1 (бо a все ще посила
 Кожен об’єкт "тримає" іншого, і їхні лічильники (refcount) ніколи не стають 0. Без нульового лічильника пам’ять не звільняється, і ми отримуємо витік пам’яті.
 
 ### Перевірка витоків з Valgrind:
-'''bash
+```bash
 valgrind --leak-check=full ./task1
-'''
+```
 
 Вивід:
-'''
-Created two objects with cyclic references
-==1232==
-==1232== HEAP SUMMARY:
-==1232==     in use at exit: 4,128 bytes in 3 blocks
-==1232==   total heap usage: 3 allocs, 0 frees, 4,128 bytes allocated
-==1232==
-==1232== 32 (16 direct, 16 indirect) bytes in 1 blocks are definitely lost in loss record 2 of 3
-==1232==    at 0x484E2E4: malloc (vg_replace_malloc.c:450)
-==1232==    by 0x4006F3: rc_new (task1.c:11)
-==1232==    by 0x4007CA: main (task1.c:42)
-==1232==
-==1232== LEAK SUMMARY:
-==1232==    definitely lost: 16 bytes in 1 blocks
-==1232==    indirectly lost: 16 bytes in 1 blocks
-==1232==      possibly lost: 0 bytes in 0 blocks
-==1232==    still reachable: 0 bytes in 0 blocks
-==1232==         suppressed: 4,096 bytes in 1 blocks
-'''
+```
+  Created two objects with cyclic references
+  ==1232==
+  ==1232== HEAP SUMMARY:
+  ==1232==     in use at exit: 4,128 bytes in 3 blocks
+  ==1232==   total heap usage: 3 allocs, 0 frees, 4,128 bytes allocated
+  ==1232==
+  ==1232== 32 (16 direct, 16 indirect) bytes in 1 blocks are definitely lost in loss record 2 of 3
+  ==1232==    at 0x484E2E4: malloc (vg_replace_malloc.c:450)
+  ==1232==    by 0x4006F3: rc_new (task1.c:11)
+  ==1232==    by 0x4007CA: main (task1.c:42)
+  ==1232==
+  ==1232== LEAK SUMMARY:
+  ==1232==    definitely lost: 16 bytes in 1 blocks
+  ==1232==    indirectly lost: 16 bytes in 1 blocks
+  ==1232==      possibly lost: 0 bytes in 0 blocks
+  ==1232==    still reachable: 0 bytes in 0 blocks
+  ==1232==         suppressed: 4,096 bytes in 1 blocks
+```
 
 Два об’єкти (a і b) по 16 байт залишилися в пам’яті.
 Жоден не був звільнений, бо їхні лічильники не досягли 0.
